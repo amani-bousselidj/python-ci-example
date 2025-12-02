@@ -30,12 +30,24 @@ pip install -r requirements.txt
 
 ## Running the Server
 
+### Option 1: Using the startup script (recommended)
 ```bash
-# Start the server
+./start_server.sh
+```
+
+### Option 2: Using uvicorn directly
+```bash
+# Start the server with auto-reload
 uvicorn app:app --reload
 
-# Server will be available at http://localhost:8000
+# Or without reload for production
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
+
+The server will be available at http://localhost:8000
+
+- API Documentation (Swagger): http://localhost:8000/docs
+- Alternative Documentation (ReDoc): http://localhost:8000/redoc
 
 ## API Endpoints
 
@@ -132,6 +144,20 @@ Once the server is running, visit:
 - ReDoc: http://localhost:8000/redoc
 
 ## Example Usage
+
+### Quick Start with Example Script
+
+The repository includes an example script that demonstrates all API endpoints:
+
+```bash
+# Make sure the server is running first
+./start_server.sh
+
+# In another terminal, run the example
+python example_usage.py
+```
+
+### Manual API Usage
 
 ```python
 import requests
