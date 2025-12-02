@@ -10,7 +10,6 @@ import os
 
 # Database setup
 # Use absolute path for database to avoid permission issues
-import tempfile
 db_dir = os.getenv("DB_DIR", os.getcwd())
 db_path = os.path.join(db_dir, "messages.db")
 DATABASE_URL = os.getenv("DATABASE_URL", f"sqlite:///{db_path}")
@@ -42,11 +41,8 @@ def init_db():
     """Initialize database and ensure it's writable"""
     Base.metadata.create_all(bind=engine)
     if os.path.exists(db_path):
-        os.chmod(db_path, 0o777)
-        # Also ensure parent directory is writable
-        parent_dir = os.path.dirname(db_path)
-        if parent_dir and os.path.exists(parent_dir):
-            os.chmod(parent_dir, 0o777)
+        # Set secure permissions: read/write for owner and group only
+        os.chmod(db_path, 0o660)
 
 init_db()
 
@@ -80,12 +76,14 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Note: In production, replace ["*"] with specific frontend origins
+# e.g., ["https://yourportfolio.com", "https://www.yourportfolio.com"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["*"],  # Configure with specific origins in production
+    allow_credentials=False,  # Set to True only with specific origins
+    allow_methods=["GET", "POST", "PATCH", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
 # Database session context manager

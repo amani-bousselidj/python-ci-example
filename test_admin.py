@@ -33,8 +33,8 @@ class TestAdminDashboard(unittest.TestCase):
         if os.path.exists(test_db_path):
             try:
                 os.remove(test_db_path)
-            except:
-                pass
+            except (OSError, PermissionError) as e:
+                print(f"Warning: Could not remove test database: {e}")
     
     def test_root_endpoint(self):
         """Test root endpoint"""
